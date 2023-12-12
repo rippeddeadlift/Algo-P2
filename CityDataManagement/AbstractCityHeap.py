@@ -1,6 +1,9 @@
+import copy
 from abc import ABC, abstractmethod
 from typing import List
 from CityDataManagement.City import City
+
+# from CityDataManagement.CityDataManager import CityDataManager
 
 
 class AbstractCityHeap(ABC):
@@ -32,6 +35,8 @@ class AbstractCityHeap(ABC):
     maximumHeapCapacity = 0
     currentHeapLastIndex = 0  # current last Index of the Heap based on the inserted City Objects, this is also the current Size of the Heap
     rawCityData: List[City]
+
+    # cityDataManager:CityDataManager = None
 
     recursive: bool = False
     floyd: bool = False
@@ -117,7 +122,6 @@ class AbstractCityHeap(ABC):
         """
         # TODO: implement me!
 
-        # self.heapStorage.append(city)
         self.heapStorage[self.currentHeapLastIndex] = city
         self.currentHeapLastIndex += 1
         if self.recursive:
@@ -130,10 +134,9 @@ class AbstractCityHeap(ABC):
         Build a Heap via Floyds Heap Construction Algorithm from a unsorted List Of Cities.
         """
         # TODO: implement me!
-        # amount_of_cities = len(self.heapStorage)
-        # print(amount_of_cities)
-        # for i in range(amount_of_cities // 2, -1, -1):
-        #    self.heapify_floyd(i, amount_of_cities)
+        self.heapStorage = copy.deepcopy(self.rawCityData)
+        self.currentHeapLastIndex = len(self.heapStorage) - 1
+        self.heapify_floyd(0, self.currentHeapLastIndex)
 
     def get_root_city(self):
         """
@@ -147,9 +150,9 @@ class AbstractCityHeap(ABC):
         Return the index of the parent node.
         """
         # TODO: implement me!
-        if index == 0:
+        if index <= 0:
             return None
-        return index // 2
+        return (index - 1) // 2
 
     def get_left_child_index(self, index):
         """
@@ -197,10 +200,7 @@ class AbstractCityHeap(ABC):
         The Index of the Child can be used for this purpose.
         """
         # TODO: implement me!
-        if (
-            2 * index + 1 < self.currentHeapLastIndex
-            and self.heapStorage[2 * index + 1] is not None
-        ):
+        if 2 * index + 1 < self.currentHeapLastIndex:
             return True
         else:
             return False
@@ -218,10 +218,7 @@ class AbstractCityHeap(ABC):
         The Index of the Child can be used for this purpose.
         """
         # TODO: implement me!
-        if (
-            2 * index + 2 < self.currentHeapLastIndex
-            and self.heapStorage[2 * index + 2] is not None
-        ):
+        if 2 * index + 2 <= self.currentHeapLastIndex:
             return True
         else:
             return False
@@ -245,7 +242,7 @@ class AbstractCityHeap(ABC):
         We need the position of the parent in the StorageArray to extract the population from this position.
         """
         # TODO: implement me!
-        parent_index = index // 2
+        parent_index = (index - 1) // 2
         if self.has_parent(index):
             return self.heapStorage[parent_index].population
         else:
@@ -310,5 +307,4 @@ class AbstractCityHeap(ABC):
         ------
         List[City]:
         """
-        #print(self.heapStorage)
         return self.heapStorage

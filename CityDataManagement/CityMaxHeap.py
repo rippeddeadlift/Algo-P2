@@ -26,7 +26,7 @@ class CityMaxHeap(AbstractCityHeap):
         Establish heap conditions for a Max-Heap iterative upwards.
         """
         # TODO: implement me!
-        index = self.currentHeapLastIndex -1
+        index = self.currentHeapLastIndex - 1
         while self.has_parent(index):
             if self.get_city_population(index) > self.get_parent_population(index):
                 self.swap_nodes(self.get_parent_index(index), index)
@@ -43,7 +43,7 @@ class CityMaxHeap(AbstractCityHeap):
             return
         if self.get_city_population(index) > self.get_parent_population(index):
             self.swap_nodes(self.get_parent_index(index), index)
-            
+
             self.heapify_up_recursive(self.get_parent_index(index))
 
     def heapify_floyd(self, index, amount_of_cities):
@@ -52,8 +52,8 @@ class CityMaxHeap(AbstractCityHeap):
 
         """
         # TODO: implement me!
-        for i in range(amount_of_cities // 2, -1, -1):
-            self.heapify_down_recursive(index)
+        for i in range(amount_of_cities, index, -1):
+            self.heapify_down_recursive(self.get_parent_index(i))
 
     def heapify_down_iterative(self):
         """
@@ -66,7 +66,6 @@ class CityMaxHeap(AbstractCityHeap):
         while self.has_left_child(index):
             max_index = index
             left_child_index = self.get_left_child_index(index)
-            right_child_index = self.get_right_child_index(index)
 
             if self.get_left_child_population(index) > self.get_city_population(
                 max_index
@@ -75,6 +74,7 @@ class CityMaxHeap(AbstractCityHeap):
             if self.has_right_child(index) and self.get_right_child_population(
                 index
             ) > self.get_city_population(max_index):
+                right_child_index = self.get_right_child_index(index)
                 max_index = right_child_index
             if max_index != index:
                 self.swap_nodes(max_index, index)
@@ -88,11 +88,12 @@ class CityMaxHeap(AbstractCityHeap):
         """
         # TODO: implement me!
 
+
         max_index = index
-        if self.has_left_child(index) and self.get_left_child_population(
-            index
+        if self.has_left_child(max_index) and self.get_left_child_population(
+            max_index
         ) > self.get_city_population(max_index):
-            max_index = self.get_left_child_index(index)
+            max_index = self.get_left_child_index(max_index)
         if self.has_right_child(index) and self.get_right_child_population(
             index
         ) > self.get_city_population(max_index):
@@ -106,3 +107,9 @@ class CityMaxHeap(AbstractCityHeap):
         Remove a City from the Max-Heap
         """
         # TODO: implement me!
+        self.heapStorage[0] = self.heapStorage[self.currentHeapLastIndex - 1]
+        self.currentHeapLastIndex -= 1
+        if self.recursive:
+            self.heapify_down_recursive(0)
+        else:
+            self.heapify_down_iterative()
